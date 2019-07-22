@@ -1,7 +1,0 @@
-/home/rikanov/Projects/BlackHole/build/CMakeFiles/install/strip.dir
-/home/rikanov/Projects/BlackHole/build/CMakeFiles/edit_cache.dir
-/home/rikanov/Projects/BlackHole/build/CMakeFiles/list_install_components.dir
-/home/rikanov/Projects/BlackHole/build/CMakeFiles/install/local.dir
-/home/rikanov/Projects/BlackHole/build/CMakeFiles/rebuild_cache.dir
-/home/rikanov/Projects/BlackHole/build/CMakeFiles/blackhole.dir
-/home/rikanov/Projects/BlackHole/build/CMakeFiles/install.dir
