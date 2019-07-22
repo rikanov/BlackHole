@@ -114,6 +114,11 @@ void Board::show() const
 
 Board::~Board()
 {
+  for (int i = 0; i < _rows + 2; ++i)
+  {
+        delete[] __theGrid[i];
+  }
+  delete[] __theGrid;
   delete[] __collectionOfPlayer;
   delete[] __collectionOfProgram;
 }
