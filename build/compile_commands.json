@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/rikanov/Projects/BlackHole/build",
+  "command": "/usr/bin/g++-8    -lSDL2 -lSDL2_image -pthread -g   -o CMakeFiles/blackhole.dir/main.cpp.o -c /home/rikanov/Projects/BlackHole/main.cpp",
+  "file": "/home/rikanov/Projects/BlackHole/main.cpp"
+}
+]
