@@ -30,12 +30,10 @@ Engine::~Engine()
 {
 }
 
-Engine::Result Engine::seek0(Engine::Turn T,const bool& fast_check)
+Engine::Result Engine::seek0(const Engine::Turn& T)
 {
   Step test;
   Node ** setOfStones = (T == YOUR_TURN) ? __collectionOfPlayer : __collectionOfProgram;
-  if (fast_check)
-  {
     for (Node** nextStone = setOfStones; *nextStone; ++nextStone)
     {
       for (int direction = 0; direction < 8; ++direction)
@@ -46,29 +44,11 @@ Engine::Result Engine::seek0(Engine::Turn T,const bool& fast_check)
         }
       }
     }
-  }
-  else
-  {
-    for (Node** nextStone = setOfStones; *nextStone; ++nextStone)
-    {
-      for (int direction = 0; direction < 8; ++direction)
-      {
-        if (makeStep(nextStone,direction,test))
-        {
-          return isWinnerStep(test) ? WON : UNSURE;
-        }
-      }
-    }
-  }
   return UNSURE;
 }
 
 Engine::Result Engine::seek(Turn T,const int& depth,const bool& fast_check,const Step& exclusion,const Step& next_exclusion)
 {
-  if (depth == 0)
-  {
-    return seek0(T,fast_check);
-  }
   bool fail = true;
   Step test;
   Node ** setOfStones = (T == YOUR_TURN) ? __collectionOfPlayer : __collectionOfProgram;
@@ -83,12 +63,12 @@ Engine::Result Engine::seek(Turn T,const int& depth,const bool& fast_check,const
         {
           return WON;
         }
-        if (depth == 0)
+        if (depth == 1 && !fail)
         {
           continue;
         }
         test.revertableStep();
-        const Result tip = seek(nextTurn,depth - 1,!fail,test,next_exclusion);
+        const Result tip = depth == 1 ? seek0(nextTurn)  :  seek(nextTurn,depth - 1,!fail,test,next_exclusion);
         test.revertableStep();
         switch (tip)
         {
@@ -127,6 +107,8 @@ int Engine::getAllowedSteps(const bool& shuffle)
     }
   }
   if (shuffle)
+  {
+    srand(time(NULL));
     for (int shuffles = count; shuffles; )
     {
       const int i1 = rand() % count;
@@ -140,6 +122,7 @@ int Engine::getAllowedSteps(const bool& shuffle)
         --shuffles;
       }
     }
+  }
   return count;
 }
 
@@ -162,7 +145,8 @@ void Engine::getUsableSteps()
       continue;
     }
     test.revertableStep();
-    const Result tip = seek(_getStepsForAi ? YOUR_TURN : MY_TURN,_level - 1,fastCheck);
+    const Turn next = _getStepsForAi ? YOUR_TURN : MY_TURN;
+    const Result tip = _level == 1 ? seek0(next)  : seek(next, _level - 1,fastCheck);
     test.revertableStep();
     switch (tip)
     {

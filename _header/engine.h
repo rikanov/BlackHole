@@ -41,7 +41,7 @@ protected:
   int _level;
   bool _getStepsForAi = true;
   Result seek(Turn T,const int& depth,const bool& fast_check = false,const Step& exclusion = Step(),const Step& next_exclusion = Step());
-  Result seek0(Turn,const bool&);
+  Result seek0(const Turn&);
 
   int getAllowedSteps(const bool& shuffles = true);
   void getUsableSteps();

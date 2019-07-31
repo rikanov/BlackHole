@@ -21,8 +21,8 @@
 #include "basicui.h"
  //#include <unistd.h>
 
-static const int AUTOPLAY_LEVEL1 = 8;
-static const int AUTOPLAY_LEVEL2 = 7;
+static const int AUTOPLAY_LEVEL1 = 10;
+static const int AUTOPLAY_LEVEL2 = 9;
 
  #include <unistd.h>
 static inline void CLR() { std::cout << std::endl; system("clear"); }
