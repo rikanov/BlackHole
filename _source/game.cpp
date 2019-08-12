@@ -52,32 +52,30 @@ void Game::reset()
 
   // --- set step stacks for UI -- //
   resetStack();
-  srand(time(NULL));
 }
 
-bool Game::makeStep(const int& id,const int& dir,Step& step)
+bool Game::makeStep(const int& token,Step& step, const bool& flip) const
+{
+  const int a = flip ? Step::flip[abs(token)] : abs(token), s = token < 0 ? -1 : 1; // auxiliary
+  const int stone = s * (1 + a / 8);
+  const int dir = a % 8;
+  const bool succes = makeStep( stone, dir, step);
+  step.setToken(a);
+  return succes;
+}
+
+bool Game::makeStep(const int& id,const int& dir,Step& step) const
 {
   Node ** stone = nullptr;
   if (id < 0)
   {
     stone = __collectionOfPlayer - (id + 1);
   }
-  return stone ? makeStep(stone,dir,step) : false;
-}
-
-bool Game::makeStep(Node ** stone,const int& dir,Step& step)
-{
-  if ((*stone)->next[dir]->occupied != 0)
+  else if (id > 0)
   {
-    return false;
+    stone = __collectionOfProgram + id - 1;
   }
-  step.stone = stone;
-  step.place = *stone;
-  while (step.place->next[dir]->occupied == 0)
-  {
-    step.place = step.place->next[dir];
-  }
-  return true;
+  return stone ? Step::createStep(stone,dir,step) : false;
 }
 
 Game::~Game()

@@ -19,6 +19,8 @@
 
  
 #include "basicui.h"
+#include "machine_learning.h"
+
 //#include "view2d.h"
 
 const int size = 5;
@@ -44,9 +46,16 @@ int main(int argc,char ** argv)
       BasicUI teszt(/*size = */ size, /*AI level = */ 8, /*start player ?*/ Q == 'A', /*auto steps ?*/true);
       teszt.start();
     }
+    else if(Q == 'p')
+    {
+        MachineLearning teszt;
+        delete teszt.meta(Engine::YOUR_TURN);
+        std::cout << std::endl << "max size:  " << DataLine::maxSize() << std::endl;
+        std::cout << std::endl << "DLC after deleting root: " << DataLine::counter() << std::endl;
+    }
     else if (Q != 'e')
     {
-      BasicUI teszt(/*size = */ size, /*AI level = */ 8, /*start player ?*/ Q == 'y');
+      BasicUI teszt(/*size = */ size, /*AI level = */ 10, /*start player ?*/ Q == 'y');
       teszt.start();
     }
     else

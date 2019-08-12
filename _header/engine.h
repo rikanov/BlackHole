@@ -21,6 +21,7 @@
 #define BOARD_HEADER
 
 #include "game.h"
+#include "data_line.h"
 
 class Engine : public Game
 {
@@ -37,13 +38,17 @@ public:
     YOUR_TURN
   };
 protected:
+  DataLine * __cashedSteps = nullptr;
+  bool _reverseSearchInCache = false;
   int _bound;
   int _level;
   bool _getStepsForAi = true;
   Result seek(Turn T,const int& depth,const bool& fast_check = false,const Step& exclusion = Step(),const Step& next_exclusion = Step());
   Result seek0(const Turn&);
+  Result seek0(Node **,int);
 
   int getAllowedSteps(const bool& shuffles = true);
+  Step blink() const;
   void getUsableSteps();
 public:
   Engine(const int&,const int&);
@@ -63,11 +68,13 @@ public:
   void getStepsForAi(const bool& t) {
     _getStepsForAi = t;
   }
+  void reverseSearchInCache(bool r) {
+    _reverseSearchInCache = r;
+  }
   const bool& getStepsForAi() const {
     return _getStepsForAi;
   }
   Step getStep();
 };
-
 #endif
 

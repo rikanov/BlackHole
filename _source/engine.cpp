@@ -34,16 +34,33 @@ Engine::Result Engine::seek0(const Engine::Turn& T)
 {
   Step test;
   Node ** setOfStones = (T == YOUR_TURN) ? __collectionOfPlayer : __collectionOfProgram;
-    for (Node** nextStone = setOfStones; *nextStone; ++nextStone)
+  for (Node** nextStone = setOfStones; *nextStone; ++nextStone)
+  {
+    for (int direction = 0; direction < 8; ++direction)
     {
-      for (int direction = 0; direction < 8; ++direction)
+      if (Step::createStep(nextStone,direction,test) && isWinnerStep(test))
       {
-        if (makeStep(nextStone,direction,test) && isWinnerStep(test))
-        {
-          return WON;
-        }
+        return WON;
       }
     }
+  }
+  return UNSURE;
+}
+
+Engine::Result Engine::seek0(Node ** nextStone, int direction)
+{
+  Step test;
+  for (; *nextStone; ++nextStone)
+  {
+    for (; direction < 8; ++direction)
+    {
+      if (Step::createStep(nextStone,direction,test) && isWinnerStep(test))
+      {
+        return WON;
+      }
+    }
+    direction = 0;
+  }
   return UNSURE;
 }
 
@@ -57,18 +74,22 @@ Engine::Result Engine::seek(Turn T,const int& depth,const bool& fast_check,const
   {
     for (int direction = 0; direction < 8; ++direction)
     {
-      if (makeStep(nextStone,direction,test) && (test || exclusion))
+      if (Step::createStep(nextStone,direction,test) )
       {
+        if (depth == 1 && !fail)
+        {
+          return seek0(nextStone, direction);
+        }
         if (isWinnerStep(test))
         {
           return WON;
         }
-        if (depth == 1 && !fail)
-        {
-          continue;
-        }
         test.revertableStep();
-        const Result tip = depth == 1 ? seek0(nextTurn)  :  seek(nextTurn,depth - 1,!fail,test,next_exclusion);
+        Result tip = depth == 1 ? seek0(nextTurn)  :  seek(nextTurn,depth - 1,!fail,test,next_exclusion);
+        if(tip == UNSURE && test.inv(exclusion))
+        {
+            tip = WON;
+        }
         test.revertableStep();
         switch (tip)
         {
@@ -96,12 +117,14 @@ int Engine::getAllowedSteps(const bool& shuffle)
 {
   int count = 0;
   Step next;
-  for (Node** nextStone = _getStepsForAi ? __collectionOfProgram : __collectionOfPlayer; *nextStone; ++nextStone)
+  int stoneID = 0;
+  for (Node** nextStone = _getStepsForAi ? __collectionOfProgram : __collectionOfPlayer; *nextStone; ++nextStone, ++stoneID)
   {
     for (int direction = 0; direction < 8; ++direction)
     {
-      if (makeStep(nextStone,direction,next))
+      if (Step::createStep(nextStone,direction,next))
       {
+        next.setToken(direction + stoneID * 8);
         __allowedSteps[count++] = next;
       }
     }
@@ -169,8 +192,28 @@ void Engine::getUsableSteps()
   }
 }
 
+Step Engine::blink() const
+{
+  Step * nextStep = __moveHistory + 1;
+  const DataLine * nextDL = __cashedSteps;
+  for (int id = 0; id < stepCount(); ++id)
+  {
+    const unsigned char branch = (++nextStep)->getToken();
+    const int query = _reverseSearchInCache ? Step::flip[branch] : branch;
+    nextDL = nextDL->get( query );
+  }
+  const int token = nextDL->getRandomStepID();
+  Step ret;
+  const bool valid = makeStep(token, ret, _reverseSearchInCache);
+  return ret;
+}
+
 Step Engine::getStep()
 {
+  if (__cashedSteps && stepCount() < MAX_DEPTH_OF_CACHE)
+  {
+    return blink();
+  }
   Step bestFound;
   Step rescueSteps[MAX_NUMBER_OF_STONES * 8];
   int numberOfRescuedSteps = 0;

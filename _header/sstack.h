@@ -24,6 +24,7 @@
 
 class StepStack
 {
+protected:
   const int _stackSize;
   // Store steps for UI (undo, redo)
   Step * __moveHistory,*_currentMove,*_lastMove;
@@ -38,7 +39,7 @@ public:
     return _currentMove == _lastMove;
   }
   int stepCount() const {
-    return (_currentMove - __moveHistory);
+    return (_currentMove - __moveHistory - 1);
   }
   const Step& moveHistory(const int& index) const {
     return index < 0 ? *(_currentMove + index + 1) : __moveHistory[index];

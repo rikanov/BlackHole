@@ -20,10 +20,11 @@
 #define BASICUI_H
 
 #include "engine.h"
+#include "machine_learning.h"
 
 class BasicUI
 {
-  Engine * _engine;
+  MachineLearning * _engine;
   const bool _autoPlay;
 
   bool myTurn();

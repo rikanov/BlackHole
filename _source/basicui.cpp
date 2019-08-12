@@ -21,16 +21,19 @@
 #include "basicui.h"
  //#include <unistd.h>
 
-static const int AUTOPLAY_LEVEL1 = 10;
-static const int AUTOPLAY_LEVEL2 = 9;
+static const int AUTOPLAY_LEVEL1 = 7;
+static const int AUTOPLAY_LEVEL2 = 6;
 
  #include <unistd.h>
-static inline void CLR() { std::cout << std::endl; system("clear"); }
-  
+static inline void CLR() { std::cout << "\033[2J\033[1;1H" << std::endl;; }
+  static inline void Sleep(int m) {sleep(m * 1); }
 BasicUI::BasicUI(const int& size,const int& level,const bool& player_begin,const bool& auto_play)
   :_autoPlay(auto_play)
 {
-  _engine = new Engine(size,level);
+  _engine = new MachineLearning();
+  _engine->meta(Engine::MY_TURN);
+  _engine->reverseSearchInCache(player_begin);
+  _engine->boundLevel(level);
   _isPlayerTurn = player_begin;
 }
 
@@ -89,7 +92,7 @@ bool BasicUI::yourTurn()
       _engine->undoStep();
       CLR();
       _engine->show();
-      sleep(1);
+      Sleep(1);
       _engine->undoStep();
       CLR();
       _engine->show();
@@ -100,7 +103,7 @@ bool BasicUI::yourTurn()
       _engine->redoStep();
       CLR();
       _engine->show();
-      sleep(1);
+      Sleep(1);
       _engine->redoStep();
       CLR();
       _engine->show();
@@ -114,6 +117,10 @@ bool BasicUI::yourTurn()
     if (!valid)
     {
       std::cout << "ERR: " << id << ':' << dir << std::endl;
+    }
+    else
+    {
+      st.setToken(dir + (abs(id) - 1) * 8);
     }
   }
   _engine->storeStep(st);

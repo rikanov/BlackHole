@@ -36,8 +36,8 @@ public:
   Game(const int& S);
   virtual ~Game();
   void reset();
-  bool makeStep(const int& id,const int&,Step&);
-  bool makeStep(Node **,const int&,Step&);
+  bool makeStep(const int&, Step&, const bool& flip = false) const;
+  bool makeStep(const int& id,const int&,Step&) const;
 };
 #endif // !GAME_HEADER__H
 

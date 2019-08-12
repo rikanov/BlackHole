@@ -21,48 +21,37 @@
 #define STR_STEP_H
 
 #include "str_node.h"
+#include "step_mapping.h"
 #include <iostream>
 
-struct Step
+class Step
 {
-  Node ** stone;
-  Node * place;
+    static const StepMapping * _mapper;
+  mutable char _name[3] = {};
+  unsigned char _token = 0xFF;
+  short int _mappingValue = 0;
+  Node ** _stone;
+  Node * _place;
 
 public:
-  Step() : stone(nullptr),place(nullptr) {}
-  Step(Node ** s,Node * p) : stone(s),place(p) {}
+  Step() : _stone(nullptr),_place(nullptr) {}
+  Step(Node ** s,Node * p) : _stone(s),_place(p) {}
   Step(const Step&) = default;
-  bool isValid() const {
-    return stone != nullptr && place != nullptr;
-  }
-  void revertableStep()
-  {
-    place->occupied = (*stone)->occupied; // put down
-    (*stone)->occupied = 0;              // and pick up
-    std::swap(*stone,place);
-  }
+  bool isValid() const;
+  void revertableStep();
 
-  bool operator == (const Step& S) const
-  {
-    return isValid() && S.isValid() && *stone == *S.stone && *place == *S.place;
-  }
+  Node * place() const;
+  bool operator == (const Step& S) const;
+  bool operator != (const Step& S) const;
+  bool notInv (const Step& S) const; // are they not inverted steps of each other ?
+  bool inv (const Step& S) const; // are they inverted steps of each other ?
+  
+  const char* whatIs() const;
+  void setToken(const unsigned char& t) { _token = t; }
+  const unsigned char& getToken() const { return _token; }
+  void printData() const { printf("%s->(%d, %d) ",whatIs(),_place->row,_place->col);}
 
-  bool operator != (const Step& S) const
-  {
-    return !isValid() || !S.isValid() || *stone != *S.stone || *place != *S.place;
-  }
-  bool operator || (const Step& S) const // are they not inverted steps to each other ?
-  {
-    return !isValid() || !S.isValid() || place != *S.stone || *stone != S.place;
-  }
-  bool operator && (const Step& S) const // are they inverted steps to each other ?
-  {
-    return isValid() && S.isValid() && *stone == S.place && place == *S.stone;
-  }
-  void printData() const
-  {
-    printf("X%d->(%d, %d) ",(*stone)->occupied,place->row,place->col);
-  }
+  static bool createStep(Node **,const int&,Step&);
+  static const unsigned char flip[];
 };
-
 #endif

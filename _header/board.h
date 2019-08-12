@@ -20,8 +20,6 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>
 #include "str_step.h"
 
 class Board
@@ -47,7 +45,7 @@ public:
     return _WINNER_SPOT->occupied != 0;
   }
   bool isWinnerStep(const Step& S) const {
-    return S.place == _WINNER_SPOT;
+    return S.place() == _WINNER_SPOT;
   }
   void show() const;
 };
