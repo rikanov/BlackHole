@@ -21,10 +21,10 @@
 #define GAME_HEADER__H
 
 #include "board.h"
-#include "sstack.h"
+#include "cache.h"
 
 class Game : public Board,
-             public StepStack
+             public Cache
 {
 protected:
 
@@ -36,8 +36,8 @@ public:
   Game(const int& S);
   virtual ~Game();
   void reset();
-  bool makeStep(const int&, Step&, const bool& flip = false) const;
-  bool makeStep(const int& id,const int&,Step&) const;
+  bool makeStep(const int&, Step& /*out*/, const bool& flip = false) const;
+  bool makeStep(const int& id,const int&,Step& /*out*/) const;
 };
 #endif // !GAME_HEADER__H
 

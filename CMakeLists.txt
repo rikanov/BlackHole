@@ -15,6 +15,7 @@ add_executable(blackhole
                                 _source/sstack.cpp 
                                 _source/chain.cpp
                                 _source/data_line.cpp
+                                _source/cache.cpp
                                 _source/machine_learning.cpp)
 
 install(TARGETS blackhole RUNTIME DESTINATION bin)

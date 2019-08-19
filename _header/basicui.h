@@ -24,7 +24,7 @@
 
 class BasicUI
 {
-  MachineLearning * _engine;
+  Engine * _engine;
   const bool _autoPlay;
 
   bool myTurn();

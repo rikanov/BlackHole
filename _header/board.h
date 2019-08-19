@@ -34,7 +34,7 @@ protected:
   // Stones os players [columns]
   Node ** __collectionOfPlayer;
   Node ** __collectionOfProgram;
-
+  int _lastDepth = 0;
 public:
   Board(const int&);
   virtual ~Board();

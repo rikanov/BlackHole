@@ -11,7 +11,7 @@ class Chain
 public:
   Chain() : _step(0),_next(nullptr) {}
   Chain(const unsigned char & S, DataLine * DL) : _step(S),_next(DL) {}
-  ~Chain();
+  virtual ~Chain();
 
   void step(unsigned char& s) { _step = s; }
   const unsigned char getStep() const { return _step; }

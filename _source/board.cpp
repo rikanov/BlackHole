@@ -73,6 +73,7 @@ void Board::show() const
 {
   const char* separator = "---- ";
   const char* empty = "    |";
+  log2("Last depth:",_lastDepth);
   for (int row = _rows; row > 0; --row)
   {
     NL();

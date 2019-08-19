@@ -49,13 +49,18 @@ int main(int argc,char ** argv)
     else if(Q == 'p')
     {
         MachineLearning teszt;
-        delete teszt.meta(Engine::YOUR_TURN);
+        DataLine * root = teszt.meta(Engine::YOUR_TURN);
+        if(DataLine::writeToFile("teszt.txt"))
+        {
+            std::cout << "save to file successfully" << std::endl;
+        }
         std::cout << std::endl << "max size:  " << DataLine::maxSize() << std::endl;
+        delete root;
         std::cout << std::endl << "DLC after deleting root: " << DataLine::counter() << std::endl;
     }
     else if (Q != 'e')
     {
-      BasicUI teszt(/*size = */ size, /*AI level = */ 10, /*start player ?*/ Q == 'y');
+      BasicUI teszt(/*size = */ size, /*AI level = */ 9, /*start player ?*/ Q == 'y');
       teszt.start();
     }
     else

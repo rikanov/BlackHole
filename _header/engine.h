@@ -38,7 +38,6 @@ public:
     YOUR_TURN
   };
 protected:
-  DataLine * __cashedSteps = nullptr;
   bool _reverseSearchInCache = false;
   int _bound;
   int _level;
@@ -48,10 +47,9 @@ protected:
   Result seek0(Node **,int);
 
   int getAllowedSteps(const bool& shuffles = true);
-  Step blink() const;
   void getUsableSteps();
 public:
-  Engine(const int&,const int&);
+  Engine(const int& /*size*/, const int& /*level bound*/);
   ~Engine();
   void swapOpponents() {
     std::swap(__collectionOfPlayer,__collectionOfProgram);
@@ -67,9 +65,6 @@ public:
   }
   void getStepsForAi(const bool& t) {
     _getStepsForAi = t;
-  }
-  void reverseSearchInCache(bool r) {
-    _reverseSearchInCache = r;
   }
   const bool& getStepsForAi() const {
     return _getStepsForAi;

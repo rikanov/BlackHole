@@ -24,15 +24,13 @@
 static const int AUTOPLAY_LEVEL1 = 7;
 static const int AUTOPLAY_LEVEL2 = 6;
 
- #include <unistd.h>
-static inline void CLR() { std::cout << "\033[2J\033[1;1H" << std::endl;; }
-  static inline void Sleep(int m) {sleep(m * 1); }
 BasicUI::BasicUI(const int& size,const int& level,const bool& player_begin,const bool& auto_play)
   :_autoPlay(auto_play)
 {
-  _engine = new MachineLearning();
-  _engine->meta(Engine::MY_TURN);
-  _engine->reverseSearchInCache(player_begin);
+  _engine = new Engine(5, 11);
+  _engine->setRoot(DataLine::readFromFile("teszt.txt"));
+  _engine->getStepsForAi(true);
+  _engine->invertedSearch(player_begin);
   _engine->boundLevel(level);
   _isPlayerTurn = player_begin;
 }

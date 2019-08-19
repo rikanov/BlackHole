@@ -32,10 +32,22 @@ MachineLearning::~MachineLearning()
 
 DataLine * MachineLearning::meta(Turn T)
 {
+    getAllowedSteps(false);
+    int c; log("index ? ")
+    std::cin >> c;
+    storeStep(__allowedSteps[c]);
+    char fn[5] = {};
+    fn[0] = ('0' + c);
+    fn[1] = '.';
+    fn[2] = 'a';
+    fn[3] = 'i';
+    log2("file name:",fn)
+    show();
     Result dummy;
     DataLine * root = meta(T,dummy);
-    std::cout << DataLine::counter() << std::endl;
-    __cashedSteps = root;
+    log2("counted:",DataLine::counter());
+    log2("result:", dummy == UNSURE ? "unsure" : (dummy == WON ? "you lost" : "we won"))
+    DataLine::writeToFile(fn);
     return root;
 }
 
@@ -56,7 +68,7 @@ DataLine * MachineLearning::meta(Turn T,Result& R)
     {
         for (int direction = 0; direction < 8; ++direction)
         {
-            if (Step::createStep(nextStone,direction,test) == false)
+            if (Step::createStep(nextStone,direction,test) == false )
             {
                 continue;
             }
@@ -80,7 +92,7 @@ DataLine * MachineLearning::meta(Turn T,Result& R)
             if(tip == UNSURE && __learningHistory.moveHistory(-3).inv( __learningHistory.moveHistory(-1)))
             {
                 tip = WON;
-            }//*/
+            }
             __learningHistory.undoStep();
             switch (tip)
             {
@@ -96,42 +108,12 @@ DataLine * MachineLearning::meta(Turn T,Result& R)
             default:
                 break;
             }
-            if (depth > 2)
-                continue;
-
-            std::cout << std::endl;
-            for (int i = 0; i < depth; ++i)
-                std::cout << '\t';
-            if (depth == 1)
-            {
-                std::cout << "------------------ DLC: ";
-                std::cout << DataLine::counter() << std::endl;
-                for (int i = 0; i < depth; ++i)
-                    std::cout << '\t';
-            }
-
-            switch (tip)
-            {
-            case UNSURE:
-                test.printData();
-                std::cout << ":\tunsure   " << *pNext << std::flush;
-                break;
-            case LOST:
-                test.printData();
-                std::cout << ":\tYou win  " << *pNext << std::flush;
-                break;
-            case WON:
-                test.printData();
-                std::cout << ":\tYou lose " << *pNext << std::flush;
-                break;
-            default:
-                break;
-            }
-            if (depth == 1)
-            {
-                std::cout << std::endl << std::endl;
-            }
         }
+    }
+    if (depth == 3 )
+    {
+      CLR();
+      show();
     }
     --depth;
     if (pWinner != winner)
