@@ -103,12 +103,11 @@ bool DataLine::writeToFile(const std::string& file_name)
   return true;
 }
 
-const DataLine * DataLine::readFromFile(const std::string& file_name)
+const DataLine * DataLine::readFromFile(const std::string& file_name, bool mirrored)
 {
   std::ifstream in(file_name);
   int size;
   in >> std::hex >> size;
-  delete[] __cachedData;
   __cachedData = new DataLine *[size];
   DataLine ** next = __cachedData + 1; _counter = 1;
   std::string nextLine;
@@ -119,13 +118,51 @@ const DataLine * DataLine::readFromFile(const std::string& file_name)
     std::istringstream splittedLine(nextLine);
     splittedLine >> std::hex >> size;
     *next = new DataLine(size);
-    (**next) << splittedLine;
+    (*next)->fillUp(splittedLine, mirrored);;
     if(_counter < 120)
     {
         std::cout <<  *next  << std::endl;
     }
   }
   return *next;
+}
+
+void DataLine::fillUp(std::istringstream& is, bool mirrored)
+{
+  int next;
+  int shiftingRest = 1;
+  while (is >> std::hex >> next)
+  {
+    int address;
+    is >> address; // address can be dummy in order to keep the source file readable 
+
+    if (next != 0xFF)
+    {
+      *(_pLoad++) = Chain(mirrored ? 40 - next : next, address == 0 ? nullptr : DataLine::__cachedData[address]);
+      _pRest += shiftingRest;
+    }
+    else
+    {
+      shiftingRest = 0;
+    }
+  }
+}
+
+void DataLine::swapBranches(const Chain * beg, const int& s)
+{
+    for(int id0 = 0; id0 < _size; ++id0)
+    {
+        delete __chains[id0].getData();
+        __chains[id0].setData(beg->getData());
+        for(int id1 = 0 ; id1 < s; ++id1)
+        {
+            if(__chains[id0].getStep() == beg[id1].getStep())
+            {
+                __chains[id0].setData(beg[id1].getData());
+                id0 = _size; id1 = s; // double break
+            }
+        }
+    }
 }
 
 DataLine::~DataLine()
@@ -166,29 +203,4 @@ std::ostream& operator<<(std::ostream& out,const DataLine& DL)
     out << index << ' ';
   }
   return out << std::dec;
-}
-
-void operator<<(DataLine& DL, std::istringstream& is)
-{
-  int next;
-  int shiftingRest = 1;
-  while (is >> std::hex >> next)
-  {
-    int address;
-    is >> address; // address can be dummy in order to keep the source file readable 
-
-    if (next != 0xFF)
-    {
-      *(DL._pLoad++) = Chain(next,address == 0 ? nullptr : DataLine::__cachedData[address]);
-      DL._pRest += shiftingRest;
-    }
-    else
-    {
-      shiftingRest = 0;
-    }
-  }
-  if (DL.getIndex() < 20)
-  {
-    std::cout << DL << std::endl;
-  }
 }

@@ -28,7 +28,8 @@ BasicUI::BasicUI(const int& size,const int& level,const bool& player_begin,const
   :_autoPlay(auto_play)
 {
   _engine = new Engine(5, 11);
-  _engine->setRoot(DataLine::readFromFile("teszt.txt"));
+  //_engine->setRoot(DataLine::readFromFile("teszt.txt", false));
+   _engine->mergeFiles();
   _engine->getStepsForAi(true);
   _engine->invertedSearch(player_begin);
   _engine->boundLevel(level);

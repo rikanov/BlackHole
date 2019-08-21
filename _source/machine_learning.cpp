@@ -134,13 +134,10 @@ DataLine * MachineLearning::meta(Turn T,Result& R)
     {
         Result tip;
         // --- delete temporary DataLines --- //
-        for (Chain * next = lost; next != pLost; ++next)
-        {
-            delete next->getData();
-        }
         --_metaForsight;
         ret = meta(T,tip);
         ++_metaForsight;
+        ret->swapBranches(pLost, pLost - lost);
     }
     return ret;
 }

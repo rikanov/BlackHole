@@ -33,11 +33,12 @@ public:
   const int& getIndex() const { return _index; }
   const int& size() const { return _size; }
   const int restIndex() const { return _pRest - __chains; }
-
+  void fillUp(std::istringstream&, bool);
+  void swapBranches(const Chain *,const int&);
   static const int& counter() { return _counter; }
   static const int& maxSize() { return _maxSize; }
   static bool writeToFile(const std::string&);
-  static const DataLine * readFromFile(const std::string&);
+  static const DataLine * readFromFile(const std::string&, bool);
   friend std::ostream& operator << (std::ostream&,const DataLine&);
   friend void operator << (DataLine &, std::istringstream&);
 };
